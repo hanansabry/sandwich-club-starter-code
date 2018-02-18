@@ -5,23 +5,30 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
+    private ImageView ingredientsIv;
+    private TextView mAlsoKnownAsContentTv, mPlaceOfOriginContentTv, mDescriptionContentTv, mIngredientsContentTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+        ingredientsIv = findViewById(R.id.image_iv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -58,16 +65,28 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Sandwich sandwich) {
-        Log.d("Sandwich_MainName", sandwich.getMainName());
-        for (String alsoKnowName: sandwich.getAlsoKnownAs()){
-            Log.d("Sandwich_alsoKnowAs", alsoKnowName);
+        mAlsoKnownAsContentTv = findViewById(R.id.alsoKnownAs_content);
+        mPlaceOfOriginContentTv = findViewById(R.id.placeOfOrigin_content);
+        mDescriptionContentTv = findViewById(R.id.description_content);
+        mIngredientsContentTv = findViewById(R.id.ingredients_content);
+
+        //get alsoKnownAs Names Value
+        String alsoKnownAs = "";
+        List alsoKnownAsList = sandwich.getAlsoKnownAs();
+        for (int i = 0; i < alsoKnownAsList.size(); i++) {
+            alsoKnownAs += (i+1) + "." + alsoKnownAsList.get(i) + ". ";
         }
 
-        Log.d("Sandwich_PlaceOfOrigin", sandwich.getPlaceOfOrigin());
-        Log.d("Sandwich_Description", sandwich.getDescription());
-        Log.d("Sandwich_Image", sandwich.getImage());
-        for (String ingredient: sandwich.getIngredients()){
-            Log.d("Sandwich_Ingredient", ingredient);
+        mAlsoKnownAsContentTv.setText(alsoKnownAs);
+        mPlaceOfOriginContentTv.setText(sandwich.getPlaceOfOrigin());
+        mDescriptionContentTv.setText(sandwich.getDescription());
+
+        //get ingredients value
+        String ingredients = "";
+        List ingredientsList = sandwich.getIngredients();
+        for (int i = 0; i < ingredientsList.size(); i++) {
+            ingredients += (i+1) + "." + ingredientsList.get(i) + ". ";
         }
+        mIngredientsContentTv.setText(ingredients);
     }
 }
